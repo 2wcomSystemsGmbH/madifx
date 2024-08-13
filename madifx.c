@@ -441,6 +441,14 @@ struct mfx {
 
 static const struct pci_device_id snd_madifx_ids[] = {
 	{
+	 .vendor = 0x1d18,
+	 .device = 0x3fc7,
+	 .subvendor = PCI_ANY_ID,
+	 .subdevice = PCI_ANY_ID,
+	 .class = 0,
+	 .class_mask = 0,
+	 .driver_data = 0},
+	{
 	 .vendor = PCI_VENDOR_ID_XILINX,
 	 .device = 0x3fc7,
 	 .subvendor = PCI_ANY_ID,
@@ -3589,7 +3597,7 @@ static void snd_madifx_card_free(struct snd_card *card)
 static int snd_madifx_probe(struct pci_dev *pci,
 				     const struct pci_device_id *pci_id)
 {
-	static int dev;
+	static int dev = 0;
 	struct mfx *mfx;
 	struct snd_card *card;
 	int err;
