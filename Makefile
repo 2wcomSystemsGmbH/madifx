@@ -21,6 +21,7 @@ PWD    := $(shell pwd)
 MODDIR := $(DESTDIR)/lib/modules/$(KERNEL_VERSION)/kernel/sound/pci/rme9652
 BINDIR := $(DESTDIR)/usr/local/bin
 INCDIR := $(DESTDIR)/usr/include/alsa/sound
+GCC    := x86_64-linux-gnu-gcc
 
 default::
 	$(MAKE) -C $(KDIR) M=$(PWD) EXTRA_CFLAGS="${DEBUG_CFLAGS} ${BROKEN}" modules
