@@ -3425,11 +3425,11 @@ static int snd_madifx_create_alsa_devices(struct snd_card *card,
 static int snd_madifx_create(struct snd_card *card,
 		struct mfx *mfx)
 {
-	printk("***** %s *****\n", __func__);
 	struct pci_dev *pci = mfx->pci;
 	int err;
 	int i;
 	unsigned long io_extent;
+	printk("***** %s *****\n", __func__);
 
 	mfx->irq = -1;
 	mfx->card = card;
@@ -3602,12 +3602,12 @@ static void snd_madifx_card_free(struct snd_card *card)
 static int snd_madifx_probe(struct pci_dev *pci,
 				     const struct pci_device_id *pci_id)
 {
-	printk("***** %s *****\n", __func__);
 	static int dev = 0;
 	struct mfx *mfx;
 	struct snd_card *card;
 	int err;
 
+	printk("***** %s *****\n", __func__);
 	if (dev >= SNDRV_CARDS)
 		return -ENODEV;
 	if (!enable[dev]) {
