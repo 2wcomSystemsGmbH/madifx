@@ -2354,7 +2354,7 @@ static int snd_madifx_hw_params(struct snd_pcm_substream *substream,
 
 		mfx->playback_buffer =
 			(unsigned char *) substream->runtime->dma_area;
-		snd_printdd("Allocated sample buffer for playback at %p\n",
+		snd_printk(KERN_EMERG "Allocated sample buffer for playback at %p\n",
 				mfx->playback_buffer);
 	} else {
 		/* initialise default DMA table. Will be
@@ -2391,7 +2391,7 @@ static int snd_madifx_hw_params(struct snd_pcm_substream *substream,
 
 		mfx->capture_buffer =
 			(unsigned char *) substream->runtime->dma_area;
-		snd_printdd("Allocated sample buffer for capture at %p\n",
+		snd_printk(KERN_EMERG "Allocated sample buffer for capture at %p\n",
 				mfx->capture_buffer);
 	}
 
@@ -3277,13 +3277,13 @@ static int snd_madifx_preallocate_memory(struct mfx *mfx)
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 1, 0) && !defined(RH_NEW_AUDIO_STACK)
 	if (err < 0) {
-		snd_printdd("Could not preallocate %zd Bytes\n", wanted);
+		snd_printk(KERN_EMERG "Could not preallocate %zd Bytes\n", wanted);
 
 		return err;
 	}
 #endif
 
-	snd_printdd(" Preallocated %zd Bytes\n", wanted);
+	snd_printk(KERN_EMERG " Preallocated %zd Bytes\n", wanted);
 
 
 #ifdef CONFIG_SND_MADIFX_BROKEN
@@ -3365,7 +3365,7 @@ static int snd_madifx_create_alsa_devices(struct snd_card *card,
 {
 	int err, i;
 
-	snd_printdd("Create card...\n");
+	snd_printk(KERN_EMERG "Create card...\n");
 	err = snd_madifx_create_pcm(card, mfx);
 	if (err < 0)
 		return err;
@@ -3386,7 +3386,7 @@ static int snd_madifx_create_alsa_devices(struct snd_card *card,
 	if (err < 0)
 		return err;
 
-	snd_printdd("proc init...\n");
+	snd_printk(KERN_EMERG "proc init...\n");
 	snd_madifx_proc_init(mfx);
 
 	mfx->system_sample_rate = -1;
@@ -3397,18 +3397,18 @@ static int snd_madifx_create_alsa_devices(struct snd_card *card,
 	mfx->capture_substream = NULL;
 	mfx->playback_substream = NULL;
 
-	snd_printdd("Set defaults...\n");
+	snd_printk(KERN_EMERG "Set defaults...\n");
 	err = snd_madifx_set_defaults(mfx);
 	if (err < 0)
 		return err;
 
-	snd_printdd("Update mixer controls...\n");
+	snd_printk(KERN_EMERG "Update mixer controls...\n");
 #if 0
 	/* FIXME: MADI FX disable, old mixer is broken */
 	madifx_update_simple_mixer_controls(mfx);
 #endif
 
-	snd_printdd("Initializeing complete ???\n");
+	snd_printk(KERN_EMERG "Initializeing complete ???\n");
 
 	err = snd_card_register(card);
 	if (err < 0) {
@@ -3417,7 +3417,7 @@ static int snd_madifx_create_alsa_devices(struct snd_card *card,
 		return err;
 	}
 
-	snd_printdd("... yes now\n");
+	snd_printk(KERN_EMERG "... yes now\n");
 
 	return 0;
 }
@@ -3470,7 +3470,7 @@ static int snd_madifx_create(struct snd_card *card,
 	io_extent = pci_resource_len(pci, 0);
 
 	mfx->iobase = pcim_iomap_table(pci)[0];
-	snd_printdd("remapped region (0x%lx) 0x%lx-0x%lx\n",
+	snd_printk(KERN_EMERG "remapped region (0x%lx) 0x%lx-0x%lx\n",
 			(unsigned long)mfx->iobase, mfx->port,
 			mfx->port + io_extent - 1);
 
@@ -3481,11 +3481,11 @@ static int snd_madifx_create(struct snd_card *card,
 		return -EBUSY;
 	}
 
-	snd_printdd("use IRQ %d\n", pci->irq);
+	snd_printk(KERN_EMERG "use IRQ %d\n", pci->irq);
 
 	mfx->irq = pci->irq;
 
-	snd_printdd("kmalloc Mixer memory of %zd Bytes\n",
+	snd_printk(KERN_EMERG "kmalloc Mixer memory of %zd Bytes\n",
 			sizeof(*mfx->newmixer));
 
 	mfx->newmixer = devm_kzalloc(&pci->dev, sizeof(*mfx->newmixer), GFP_KERNEL);
@@ -3565,7 +3565,7 @@ static int snd_madifx_create(struct snd_card *card,
 	snprintf(card->id, sizeof(card->id), "MADIFXtest");
 	snd_card_set_id(card, card->id);
 
-	snd_printdd("create alsa devices.\n");
+	snd_printk(KERN_EMERG "create alsa devices.\n");
 	err = snd_madifx_create_alsa_devices(card, mfx);
 	if (err < 0)
 		return err;
