@@ -3429,7 +3429,7 @@ static int snd_madifx_create(struct snd_card *card,
 	int err;
 	int i;
 	unsigned long io_extent;
-	printk("***** %s *****\n", __func__);
+	snd_printk(KERN_EMERG "***** %s *****\n", __func__);
 
 	mfx->irq = -1;
 	mfx->card = card;
@@ -3607,7 +3607,7 @@ static int snd_madifx_probe(struct pci_dev *pci,
 	struct snd_card *card;
 	int err;
 
-	printk("***** %s *****\n", __func__);
+	snd_printk(KERN_EMERG "***** %s ***** dev %d max %d\n", __func__, dev, SNDRV_CARDS);
 	if (dev >= SNDRV_CARDS)
 		return -ENODEV;
 	if (!enable[dev]) {
