@@ -51,6 +51,7 @@ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX; /* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR; /* ID for this card */
 /* Enable this card */
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+static char idstr[SNDRV_CARDS][32];
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for RME MADIFX interface.");
@@ -3429,7 +3430,6 @@ static int snd_madifx_create(struct snd_card *card,
 	int err;
 	int i;
 	unsigned long io_extent;
-	snd_printk(KERN_EMERG "***** %s *****\n", __func__);
 
 	mfx->irq = -1;
 	mfx->card = card;
@@ -3565,10 +3565,10 @@ static int snd_madifx_create(struct snd_card *card,
 	snprintf(card->id, sizeof(card->id), "MADIFXtest");
 	snd_card_set_id(card, card->id);
 
-	snd_printk(KERN_EMERG "create alsa devices.\n");
 	err = snd_madifx_create_alsa_devices(card, mfx);
 	if (err < 0)
 		return err;
+	snd_printk(KERN_EMERG "ALSA devices created for %s.\n", mfx->card_name);
 
 	snd_madifx_initialize_midi_flush(mfx);
 
@@ -3607,6 +3607,21 @@ static int snd_madifx_probe(struct pci_dev *pci,
 	struct snd_card *card;
 	int err;
 
+	if (dev == 0)
+	{
+		int cnt;
+		for (cnt = 0; cnt < SNDRV_CARDS; cnt++)
+		{
+			if (index[cnt] == -1)
+				index[cnt] = cnt;
+			if (id[cnt] == NULL)
+			{
+				sprintf(idstr[cnt], "snd-madifx-%d", cnt);
+				id[cnt] = idstr[cnt];
+			}
+		}
+	}
+
 	snd_printk(KERN_EMERG "***** %s ***** dev %d max %d\n", __func__, dev, SNDRV_CARDS);
 	if (dev >= SNDRV_CARDS)
 		return -ENODEV;
@@ -3634,7 +3649,7 @@ static int snd_madifx_probe(struct pci_dev *pci,
 			"%s_%x",
 			mfx->card_name,
 			mfx->serial);
-	snprintf(card->longname, sizeof(card->shortname),
+	snprintf(card->longname, sizeof(card->longname),
 			"%s S/N 0x%x at 0x%lx, irq %d",
 			mfx->card_name,
 			mfx->serial,
@@ -3648,6 +3663,7 @@ static int snd_madifx_probe(struct pci_dev *pci,
 	pci_set_drvdata(pci, card);
 
 	madifx_write(mfx, MADIFX_START_LEVEL, 1);
+	snd_printk(KERN_EMERG "%s\n", card->longname);
 
 	dev++;
 	return 0;
