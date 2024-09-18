@@ -2519,7 +2519,6 @@ static int snd_rme9652_probe(struct pci_dev *pci,
 	struct snd_card *card;
 	int err;
 
-	snd_printk(KERN_EMERG "***** %s ***** dev %d max %d\n", __func__, dev, SNDRV_CARDS);
 	if (dev >= SNDRV_CARDS)
 		return -ENODEV;
 	if (!enable[dev]) {
